@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women Section Super Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        women: {
+                            light: '#A1BC98',
+                            DEFAULT: '#A1BC98',
+                            dark: '#8AA882'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition {
+            transition: all 0.3s ease;
+        }
+        .content-transition {
+            transition: all 0.3s ease;
+        }
+        .active-section {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid white;
+        }
+        .stats-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container {
+            background: linear-gradient(to bottom right, #A1BC98, #8AA882);
+        }
+        .program-card {
+            transition: all 0.3s ease;
+        }
+        .program-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Main Container -->
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar-transition bg-women-dark text-white w-64 flex flex-col">
+            <!-- Logo and Title -->
+            <div class="p-4 border-b border-women-light">
+                <h1 class="text-xl font-bold">Women's Dashboard</h1>
+                <p class="text-sm text-gray-200">Super Admin Panel</p>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-women-light/20 active-section" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt mr-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-women-light/20" data-section="members">
+                            <i class="fas fa-user-friends mr-3"></i>
+                            <span>Members</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-women-light/20" data-section="programs">
+                            <i class="fas fa-hands-helping mr-3"></i>
+                            <span>Programs</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-women-light/20" data-section="workshops">
+                            <i class="fas fa-chalkboard-teacher mr-3"></i>
+                            <span>Workshops</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-women-light/20" data-section="events">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            <span>Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-women-light/20" data-section="finance">
+                            <i class="fas fa-money-bill-wave mr-3"></i>
+                            <span>Finance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-women-light/20" data-section="reports">
+                            <i class="fas fa-chart-bar mr-3"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-women-light/20" data-section="settings">
+                            <i class="fas fa-cog mr-3"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Profile -->
+            <div class="p-4 border-t border-women-light">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-women-light flex items-center justify-center">
+                        <i class="fas fa-user text-women-dark"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="font-medium">Super Admin</p>
+                        <p class="text-xs text-gray-200">admin@womensection.edu</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Bar -->
+            <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+                <div class="flex items-center">
+                    <button id="toggleSidebar" class="p-2 rounded-md text-gray-600 hover:bg-gray-100">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 id="sectionTitle" class="ml-4 text-xl font-semibold">Women's Dashboard</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="p-2 rounded-full hover:bg-gray-100 relative">
+                            <i class="fas fa-bell text-gray-600"></i>
+                            <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">5</span>
+                        </button>
+                    </div>
+                    <button class="p-2 rounded-full hover:bg-gray-100">
+                        <i class="fas fa-cog text-gray-600"></i>
+                    </button>
+                    <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100">
+                        <div class="w-8 h-8 rounded-full bg-women flex items-center justify-center">
+                            <i class="fas fa-user text-women-dark"></i>
+                        </div>
+                        <span>Admin</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="stats-card bg-women p-4 rounded-lg shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-700">Total Members</p>
+                                    <p class="text-2xl font-bold">156</p>
+                                    <p class="text-xs text-green-600 mt-1"><i class="fas fa-arrow-up mr-1"></i> 8% increase</p>
+                                </div>
+                                <div class="p-3 bg-white/50 rounded-full">
+                                    <i class="fas fa-user-friends text-gray-700"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stats-card bg-women p-4 rounded-lg shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-700">Active Programs</p>
+                                    <p class="text-2xl font-bold">8</p>
+                                    <p class="text-xs text-green-600 mt-1"><i class="fas fa-check-circle mr-1"></i> All running</p>
+                                </div>
+                                <div class="p-3 bg-white/50 rounded-full">
+                                    <i class="fas fa-hands-helping text-gray-700"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stats-card bg-women p-4 rounded-lg shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-700">Workshops</p>
+                                    <p class="text-2xl font-bold">3</p>
+                                    <p class="text-xs text-blue-600 mt-1"><i class="fas fa-info-circle mr-1"></i> 1 upcoming</p>
+                                </div>
+                                <div class="p-3 bg-white/50 rounded-full">
+                                    <i class="fas fa-chalkboard text-gray-700"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stats-card bg-women p-4 rounded-lg shadow">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-700">Monthly Attendance</p>
+                                    <p class="text-2xl font-bold">87%</p>
+                                    <p class="text-xs text-green-600 mt-1"><i class="fas fa-calendar-check mr-1"></i> 142 present</p>
+                                </div>
+                                <div class="p-3 bg-white/50 rounded-full">
+                                    <i class="fas fa-clipboard-check text-gray-700"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts and Data -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <!-- Program Participation Chart -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h3 class="text-lg font-semibold mb-4">Program Participation</h3>
+                            <div class="chart-container h-64 rounded-lg p-4 flex items-end justify-between">
+                                <div class="flex flex-col items-center">
+                                    <div class="bg-white w-10 h-32 rounded-t-lg flex items-end">
+                                        <div class="bg-women-dark w-full h-3/4 rounded-t-lg"></div>
+                                    </div>
+                                    <span class="mt-2 text-white font-medium">Sewing</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="bg-white w-10 h-40 rounded-t-lg flex items-end">
+                                        <div class="bg-women-dark w-full h-4/5 rounded-t-lg"></div>
+                                    </div>
+                                    <span class="mt-2 text-white font-medium">Cooking</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="bg-white w-10 h-36 rounded-t-lg flex items-end">
+                                        <div class="bg-women-dark w-full h-2/3 rounded-t-lg"></div>
+                                    </div>
+                                    <span class="mt-2 text-white font-medium">Parenting</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="bg-white w-10 h-44 rounded-t-lg flex items-end">
+                                        <div class="bg-women-dark w-full h-5/6 rounded-t-lg"></div>
+                                    </div>
+                                    <span class="mt-2 text-white font-medium">Health</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="bg-white w-10 h-28 rounded-t-lg flex items-end">
+                                        <div class="bg-women-dark w-full h-3/4 rounded-t-lg"></div>
+                                    </div>
+                                    <span class="mt-2 text-white font-medium">Business</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recent Activities -->
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h3 class="text-lg font-semibold mb-4">Recent Activities</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="p-2 bg-women/30 rounded-full mr-3">
+                                        <i class="fas fa-user-plus text-women-dark"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">New member registration</p>
+                                        <p class="text-sm text-gray-600">Fatima Ahmed registered for sewing class</p>
+                                        <p class="text-xs text-gray-500">5 hours ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="p-2 bg-women/30 rounded-full mr-3">
+                                        <i class="fas fa-calendar-check text-women-dark"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Workshop scheduled</p>
+                                        <p class="text-sm text-gray-600">Parenting workshop scheduled for next week</p>
+                                        <p class="text-xs text-gray-500">Yesterday</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="p-2 bg-women/30 rounded-full mr-3">
+                                        <i class="fas fa-money-bill-wave text-women-dark"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Donation received</p>
+                                        <p class="text-sm text-gray-600">Monthly donation from 12 members received</p>
+                                        <p class="text-xs text-gray-500">2 days ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="p-2 bg-women/30 rounded-full mr-3">
+                                        <i class="fas fa-award text-women-dark"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Program completion</p>
+                                        <p class="text-sm text-gray-600">15 women completed sewing certification</p>
+                                        <p class="text-xs text-gray-500">3 days ago</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Active Programs -->
+                    <div class="bg-white rounded-lg shadow p-6 mb-8">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold">Active Programs</h3>
+                            <button class="text-women-dark hover:text-women-light font-medium">View All</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="program-card border border-women-light rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-women-light p-2 rounded-lg mr-3">
+                                        <i class="fas fa-tshirt text-women-dark"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Sewing & Tailoring</p>
+                                        <p class="text-sm text-gray-600">45 participants</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Learn professional sewing and tailoring skills for economic empowerment</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs bg-women-light text-women-dark px-2 py-1 rounded">Active</span>
+                                    <span class="text-xs text-gray-500">Mon & Wed</span>
+                                </div>
+                            </div>
+                            <div class="program-card border border-women-light rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-women-light p-2 rounded-lg mr-3">
+                                        <i class="fas fa-utensils text-women-dark"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Culinary Arts</p>
+                                        <p class="text-sm text-gray-600">32 participants</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Master cooking techniques and start food-related businesses</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs bg-women-light text-women-dark px-2 py-1 rounded">Active</span>
+                                    <span class="text-xs text-gray-500">Tue & Thu</span>
+                                </div>
+                            </div>
+                            <div class="program-card border border-women-light rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-women-light p-2 rounded-lg mr-3">
+                                        <i class="fas fa-child text-women-dark"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Parenting Skills</p>
+                                        <p class="text-sm text-gray-600">28 participants</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-3">Develop effective parenting strategies for child development</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs bg-women-light text-women-dark px-2 py-1 rounded">Active</span>
+                                    <span class="text-xs text-gray-500">Saturday</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Upcoming Events -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold">Upcoming Events</h3>
+                            <button class="text-women-dark hover:text-women-light font-medium">View All</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="border border-women-light rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-women-light p-2 rounded-lg mr-3">
+                                        <i class="fas fa-calendar-alt text-women-dark"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Health Awareness</p>
+                                        <p class="text-sm text-gray-600">25th October, 2023</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600">Women's health screening and awareness session</p>
+                            </div>
+                            <div class="border border-women-light rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-women-light p-2 rounded-lg mr-3">
+                                        <i class="fas fa-users text-women-dark"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Business Expo</p>
+                                        <p class="text-sm text-gray-600">5th November, 2023</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600">Showcase of products made by women entrepreneurs</p>
+                            </div>
+                            <div class="border border-women-light rounded-lg p-4">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-women-light p-2 rounded-lg mr-3">
+                                        <i class="fas fa-graduation-cap text-women-dark"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">Skills Graduation</p>
+                                        <p class="text-sm text-gray-600">15th November, 2023</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600">Graduation ceremony for skill development programs</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Members Section -->
+                <div id="members-section" class="content-section hidden">
+                    <div class="mb-6 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Member Management</h3>
+                            <p class="text-gray-600">Manage all member records and information</p>
+                        </div>
+                        <button class="bg-women-dark text-white px-4 py-2 rounded-lg hover:bg-women-light transition">
+                            <i class="fas fa-plus mr-2"></i> Add New Member
+                        </button>
+                    </div>
+                    
+                    <!-- Member Table -->
+                    <div class="bg-white rounded-lg shadow overflow-hidden">
+                        <div class="p-4 border-b flex justify-between items-center">
+                            <h4 class="font-medium">All Members</h4>
+                            <div class="flex space-x-2">
+                                <input type="text" placeholder="Search members..." class="border rounded-lg px-3 py-1 text-sm">
+                                <button class="bg-women-light px-3 py-1 rounded-lg text-sm">Filter</button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member ID</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Join Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">WMN-001</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Fatima Ahmed</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Sewing & Tailoring</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15/08/2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-women-dark hover:text-women-light mr-3">Edit</a>
+                                            <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">WMN-002</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Aisha Mohammed</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Culinary Arts</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">22/07/2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-women-dark hover:text-women-light mr-3">Edit</a>
+                                            <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">WMN-003</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Zainab Ibrahim</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Parenting Skills</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10/09/2023</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="#" class="text-women-dark hover:text-women-light mr-3">Edit</a>
+                                            <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t flex justify-between items-center">
+                            <p class="text-sm text-gray-700">Showing 1 to 10 of 156 results</p>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 border rounded-lg text-sm">Previous</button>
+                                <button class="px-3 py-1 border rounded-lg bg-women-light text-sm">1</button>
+                                <button class="px-3 py-1 border rounded-lg text-sm">2</button>
+                                <button class="px-3 py-1 border rounded-lg text-sm">3</button>
+                                <button class="px-3 py-1 border rounded-lg text-sm">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Programs Section -->
+                <div id="programs-section" class="content-section hidden">
+                    <div class="mb-6 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Program Management</h3>
+                            <p class="text-gray-600">Manage all programs and courses</p>
+                        </div>
+                        <button class="bg-women-dark text-white px-4 py-2 rounded-lg hover:bg-women-light transition">
+                            <i class="fas fa-plus mr-2"></i> Add New Program
+                        </button>
+                    </div>
+                    
+                    <!-- Programs Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="program-card bg-white rounded-lg shadow p-6 border border-women-light">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h4 class="font-semibold text-lg">Sewing & Tailoring</h4>
+                                    <p class="text-sm text-gray-600">45 participants</p>
+                                </div>
+                                <span class="bg-women-light text-women-dark text-xs px-2 py-1 rounded">Active</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Professional sewing and tailoring skills for economic empowerment</p>
+                            <div class="flex justify-between items-center mb-4">
+                                <div>
+                                    <p class="text-sm font-medium">Instructor</p>
+                                    <p class="text-sm text-gray-600">Sister Aisha</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Schedule</p>
+                                    <p class="text-sm text-gray-600">Mon & Wed</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="flex-1 bg-women-dark text-white py-2 rounded-lg text-sm hover:bg-women-light">Manage</button>
+                                <button class="flex-1 border border-women-dark text-women-dark py-2 rounded-lg text-sm hover:bg-women-light">View</button>
+                            </div>
+                        </div>
+                        
+                        <div class="program-card bg-white rounded-lg shadow p-6 border border-women-light">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h4 class="font-semibold text-lg">Culinary Arts</h4>
+                                    <p class="text-sm text-gray-600">32 participants</p>
+                                </div>
+                                <span class="bg-women-light text-women-dark text-xs px-2 py-1 rounded">Active</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Master cooking techniques and start food-related businesses</p>
+                            <div class="flex justify-between items-center mb-4">
+                                <div>
+                                    <p class="text-sm font-medium">Instructor</p>
+                                    <p class="text-sm text-gray-600">Sister Fatima</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Schedule</p>
+                                    <p class="text-sm text-gray-600">Tue & Thu</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="flex-1 bg-women-dark text-white py-2 rounded-lg text-sm hover:bg-women-light">Manage</button>
+                                <button class="flex-1 border border-women-dark text-women-dark py-2 rounded-lg text-sm hover:bg-women-light">View</button>
+                            </div>
+                        </div>
+                        
+                        <div class="program-card bg-white rounded-lg shadow p-6 border border-women-light">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h4 class="font-semibold text-lg">Parenting Skills</h4>
+                                    <p class="text-sm text-gray-600">28 participants</p>
+                                </div>
+                                <span class="bg-women-light text-women-dark text-xs px-2 py-1 rounded">Active</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">Develop effective parenting strategies for child development</p>
+                            <div class="flex justify-between items-center mb-4">
+                                <div>
+                                    <p class="text-sm font-medium">Instructor</p>
+                                    <p class="text-sm text-gray-600">Dr. Amina</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Schedule</p>
+                                    <p class="text-sm text-gray-600">Saturday</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="flex-1 bg-women-dark text-white py-2 rounded-lg text-sm hover:bg-women-light">Manage</button>
+                                <button class="flex-1 border border-women-dark text-women-dark py-2 rounded-lg text-sm hover:bg-women-light">View</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional sections would go here (Workshops, Events, Finance, Reports, Settings) -->
+                <!-- For brevity, I've implemented Dashboard, Members, and Programs sections -->
+                
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar on mobile
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('absolute');
+            sidebar.classList.toggle('z-10');
+            sidebar.classList.toggle('h-full');
+        });
+
+        // Switch between sections
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                document.querySelectorAll('nav a').forEach(item => {
+                    item.classList.remove('active-section');
+                });
+                
+                // Add active class to clicked link
+                this.classList.add('active-section');
+                
+                // Hide all sections
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                // Show selected section
+                const sectionId = this.getAttribute('data-section') + '-section';
+                document.getElementById(sectionId).classList.remove('hidden');
+                
+                // Update section title
+                const sectionTitle = document.getElementById('sectionTitle');
+                const sectionNames = {
+                    'dashboard': "Women's Dashboard",
+                    'members': 'Member Management',
+                    'programs': 'Program Management',
+                    'workshops': 'Workshop Management',
+                    'events': 'Event Management',
+                    'finance': 'Financial Management',
+                    'reports': 'Reports & Analytics',
+                    'settings': 'System Settings'
+                };
+                sectionTitle.textContent = sectionNames[this.getAttribute('data-section')];
+            });
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('hidden', 'absolute', 'z-10');
+            }
+        });
+    </script>
+</body>
+</html>

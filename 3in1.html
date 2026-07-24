@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3-in-1 Software Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        islamiya: '#D2DCB6',
+                        women: '#A1BC98',
+                        primary: {
+                            dark: '#000B58',
+                            light: '#87CEEB'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition {
+            transition: all 0.3s ease;
+        }
+        .content-transition {
+            transition: all 0.3s ease;
+        }
+        .active-section {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid white;
+        }
+        .stats-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .nav-button {
+            width: 100%;
+            text-align: left;
+            border: none;
+            background: none;
+            color: inherit;
+            cursor: pointer;
+        }
+        .nav-button:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Main Container -->
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar-transition bg-primary-dark text-white w-64 flex flex-col">
+            <!-- Logo and Title -->
+            <div class="p-4 border-b border-primary-light">
+                <h1 class="text-xl font-bold">3-in-1 Dashboard</h1>
+                <p class="text-sm text-gray-300">Super Admin Panel</p>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="islamiya.html" class="flex items-center p-3 rounded-lg hover:bg-primary-light/20 active-section">
+                            <i class="fas fa-mosque mr-3"></i>
+                            <span>Islamiya Section</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="women.html" class="flex items-center p-3 rounded-lg hover:bg-primary-light/20">
+                            <i class="fas fa-female mr-3"></i>
+                            <span>Women Section</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="primary.html" class="flex items-center p-3 rounded-lg hover:bg-primary-light/20">
+                            <i class="fas fa-school mr-3"></i>
+                            <span>Primary Section</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Profile -->
+            <div class="p-4 border-t border-primary-light">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center">
+                        <i class="fas fa-user text-primary-dark"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="font-medium">Super Admin</p>
+                        <p class="text-xs text-gray-300">admin@example.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Bar -->
+            <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+                <div class="flex items-center">
+                    <button id="toggleSidebar" class="p-2 rounded-md text-gray-600 hover:bg-gray-100">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 id="sectionTitle" class="ml-4 text-xl font-semibold">3-in-1 Dashboard</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-gray-100">
+                        <i class="fas fa-bell text-gray-600"></i>
+                    </button>
+                    <button class="p-2 rounded-full hover:bg-gray-100">
+                        <i class="fas fa-cog text-gray-600"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="flex-1 overflow-y-auto p-6">
+                <!-- Welcome Section -->
+                <div class="bg-white rounded-lg shadow p-8 text-center">
+                    <div class="max-w-4xl mx-auto">
+                        <i class="fas fa-tachometer-alt text-primary-dark text-6xl mb-6"></i>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4">Welcome to 3-in-1 Dashboard</h2>
+                        <p class="text-gray-600 mb-8 text-lg">Select a section from the sidebar to manage its activities and view detailed analytics.</p>
+                        
+                        <!-- Quick Access Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                            <!-- Islamiya Card -->
+                            <a href="islamiya.html" class="block transform transition duration-300 hover:scale-105">
+                                <div class="bg-gradient-to-br from-islamiya to-islamiya/80 p-6 rounded-lg shadow-lg text-white text-center h-full">
+                                    <i class="fas fa-mosque text-4xl mb-4"></i>
+                                    <h3 class="text-xl font-bold mb-2">Islamiya Section</h3>
+                                    <p class="mb-4">Manage Islamic education programs, students, and courses</p>
+                                    <div class="bg-white/20 rounded-lg p-3">
+                                        <div class="flex justify-between text-sm">
+                                            <span>Students: 245</span>
+                                            <span>Classes: 12</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            
+                            <!-- Women Card -->
+                            <a href="women.html" class="block transform transition duration-300 hover:scale-105">
+                                <div class="bg-gradient-to-br from-women to-women/80 p-6 rounded-lg shadow-lg text-white text-center h-full">
+                                    <i class="fas fa-female text-4xl mb-4"></i>
+                                    <h3 class="text-xl font-bold mb-2">Women Section</h3>
+                                    <p class="mb-4">Manage women's programs, workshops, and activities</p>
+                                    <div class="bg-white/20 rounded-lg p-3">
+                                        <div class="flex justify-between text-sm">
+                                            <span>Members: 156</span>
+                                            <span>Programs: 8</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            
+                            <!-- Primary Card -->
+                            <div class="bg-gradient-to-br from-primary-dark to-primary-light p-6 rounded-lg shadow-lg text-white text-center h-full">
+                                <i class="fas fa-school text-4xl mb-4"></i>
+                                <h3 class="text-xl font-bold mb-2">Primary Section</h3>
+                                <p class="mb-4">Manage primary education programs and student admissions</p>
+                                <div class="bg-white/20 rounded-lg p-3">
+                                    <div class="flex justify-between text-sm">
+                                        <span>Students: 342</span>
+                                        <span>Classes: 15</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recent Activity -->
+                        <div class="mt-12 bg-gray-50 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold mb-6 text-gray-800">Recent Activity Across All Sections</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <!-- Islamiya Activity -->
+                                <div class="bg-white p-4 rounded-lg border-l-4 border-islamiya">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-10 h-10 rounded-full bg-islamiya flex items-center justify-center mr-3">
+                                            <i class="fas fa-mosque text-islamiya-dark"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Islamiya Section</h4>
+                                            <p class="text-sm text-gray-600">New student registration</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-700">Ahmad Abdullah registered for Quran class</p>
+                                    <p class="text-xs text-gray-500 mt-2">2 hours ago</p>
+                                </div>
+                                
+                                <!-- Women Activity -->
+                                <div class="bg-white p-4 rounded-lg border-l-4 border-women">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-10 h-10 rounded-full bg-women flex items-center justify-center mr-3">
+                                            <i class="fas fa-female text-women-dark"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Women Section</h4>
+                                            <p class="text-sm text-gray-600">New member joined</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-700">Fatima Ahmed registered for sewing class</p>
+                                    <p class="text-xs text-gray-500 mt-2">5 hours ago</p>
+                                </div>
+                                
+                                <!-- Primary Activity -->
+                                <div class="bg-white p-4 rounded-lg border-l-4 border-primary-light">
+                                    <div class="flex items-center mb-3">
+                                        <div class="w-10 h-10 rounded-full bg-primary-light flex items-center justify-center mr-3">
+                                            <i class="fas fa-school text-primary-dark"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold">Primary Section</h4>
+                                            <p class="text-sm text-gray-600">New admission</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-700">Yusuf Ibrahim admitted to Grade 3</p>
+                                    <p class="text-xs text-gray-500 mt-2">3 hours ago</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Stats -->
+                        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-islamiya p-4 rounded-lg text-center">
+                                <h4 class="font-bold text-lg text-gray-800">Islamiya Stats</h4>
+                                <div class="flex justify-between mt-2 text-sm">
+                                    <div>
+                                        <p class="font-semibold">245</p>
+                                        <p class="text-gray-700">Students</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">18</p>
+                                        <p class="text-gray-700">Teachers</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">92%</p>
+                                        <p class="text-gray-700">Attendance</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-women p-4 rounded-lg text-center">
+                                <h4 class="font-bold text-lg text-gray-800">Women Stats</h4>
+                                <div class="flex justify-between mt-2 text-sm">
+                                    <div>
+                                        <p class="font-semibold">156</p>
+                                        <p class="text-gray-700">Members</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">8</p>
+                                        <p class="text-gray-700">Programs</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">87%</p>
+                                        <p class="text-gray-700">Attendance</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-primary-light p-4 rounded-lg text-center">
+                                <h4 class="font-bold text-lg text-gray-800">Primary Stats</h4>
+                                <div class="flex justify-between mt-2 text-sm">
+                                    <div>
+                                        <p class="font-semibold">342</p>
+                                        <p class="text-gray-700">Students</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">24</p>
+                                        <p class="text-gray-700">Teachers</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">28</p>
+                                        <p class="text-gray-700">New Admissions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar on mobile
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('absolute');
+            sidebar.classList.toggle('z-10');
+            sidebar.classList.toggle('h-full');
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('hidden', 'absolute', 'z-10');
+            }
+        });
+
+        // Add active class to current page in navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('nav a');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active-section');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

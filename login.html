@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bedside Light Login — Interactive Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0b1020;
+            --bg-light: #f8fafc;
+            --card: #ffffff;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --accent: #f59e0b;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-dark);
+            transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
+            color: var(--text-dark);
+        }
+
+        /* Bedside light control */
+        .bedside-control {
+            position: fixed;
+            right: 1.5rem;
+            top: 1.5rem;
+            text-align: center;
+            z-index: 40;
+        }
+
+        .lamp {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset -6px -8px 18px rgba(255, 255, 255, 0.03), 
+                        0 6px 18px rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lamp:hover {
+            transform: scale(1.05);
+        }
+
+        .lamp.on {
+            background: linear-gradient(180deg, #fef3c7, #f59e0b);
+            box-shadow: 0 0 50px rgba(245, 158, 11, 0.45), 
+                        0 0 120px rgba(245, 158, 11, 0.12);
+        }
+
+        .lamp::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 18px;
+            background: rgba(0, 0, 0, 0.15);
+            bottom: 10px;
+            border-radius: 3px;
+        }
+
+        .lamp-label {
+            color: #fff;
+            font-weight: 600;
+            margin-top: .6rem;
+            font-size: .9rem;
+            transition: color 0.3s ease;
+        }
+
+        .light-mode .lamp-label {
+            color: var(--text-dark);
+        }
+
+        /* Main container */
+        .container {
+            width: min(960px, 95%);
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Card styling */
+        .card {
+            width: 420px;
+            height: 520px;
+            background: var(--card);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(2, 6, 23, 0.6);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+        }
+
+        .light-mode .card {
+            box-shadow: 0 25px 50px rgba(2, 6, 23, 0.1);
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .card h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card p.muted {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            outline: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            background: #fff;
+        }
+
+        input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            border-color: var(--primary);
+        }
+
+        .actions {
+            margin-top: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn.signin {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn.signin:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn.signin:active {
+            transform: translateY(0);
+        }
+
+        /* Face area */
+        .face-wrapper {
+            width: 240px;
+            height: 320px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s;
+        }
+
+        .face-wrapper.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .face-scene {
+            position: relative;
+            width: 200px;
+            height: 260px;
+            pointer-events: none;
+        }
+
+        /* Face base */
+        .face {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: #ffd88d;
+            border: 6px solid #f2c56a;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+            transform-origin: center center;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+            transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.3), opacity 0.6s;
+        }
+
+        .face.pop {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Eyes */
+        .eye {
+            width: 34px;
+            height: 34px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 48px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .eye.left {
+            left: 26px;
+        }
+
+        .eye.right {
+            right: 26px;
+        }
+
+        .pupil {
+            width: 14px;
+            height: 14px;
+            background: #111;
+            border-radius: 50%;
+            transform: translate(0, 0);
+            transition: transform 0.1s linear;
+        }
+
+        /* Mouth */
+        .mouth {
+            width: 70px;
+            height: 38px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 28px;
+            background: #e56b6b;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mouth::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 6px;
+            width: 50px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+        }
+
+        .mouth.smile {
+            height: 24px;
+            border-bottom-left-radius: 60px;
+            border-bottom-right-radius: 60px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        /* Hands to cover eyes */
+        .hand {
+            width: 50px;
+            height: 50px;
+            background: #ffd88d;
+            border-radius: 50%;
+            position: absolute;
+            top: 30px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+            transform: translateY(-80px);
+            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
+            z-index: 10;
+        }
+
+        .hand.left {
+            left: 6px;
+        }
+
+        .hand.right {
+            right: 6px;
+        }
+
+        .hand.cover {
+            transform: translateY(6px);
+        }
+
+        /* Small fingers visual */
+        .hand::after {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 28px;
+            width: 10px;
+            height: 6px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.06);
+        }
+
+        /* Blinking animation */
+        .eyelid {
+            position: absolute;
+            width: 36px;
+            height: 36px;
+            background: #ffd88d;
+            top: 48px;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            z-index: 5;
+        }
+
+        .eyelid.left {
+            left: 26px;
+        }
+
+        .eyelid.right {
+            right: 26px;
+        }
+
+        /* Light mode adjustments */
+        .light-mode {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        /* Responsive design */
+        @media (max-width: 880px) {
+            .container {
+                flex-direction: column-reverse;
+                gap: 2rem;
+            }
+
+            .face-wrapper {
+                order: -1;
+                margin-bottom: 1rem;
+                height: 240px;
+            }
+
+            .card {
+                width: 380px;
+                height: auto;
+                min-height: 480px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 95%;
+                padding: 2rem 1.5rem;
+            }
+
+            .bedside-control {
+                right: 1rem;
+                top: 1rem;
+            }
+
+            .lamp {
+                width: 70px;
+                height: 70px;
+            }
+        }
+
+        /* Particles for ambient effect */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .light-mode .particle {
+            background: rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Ambient particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Bedside Light Control -->
+    <div class="bedside-control">
+        <div class="lamp" id="bedsideLamp" aria-pressed="false" title="Toggle bedside light" role="button" tabindex="0">
+            <div class="lamp-glow"></div>
+        </div>
+        <div class="lamp-label">Bedside Light</div>
+    </div>
+
+    <div class="container" id="mainContainer">
+        <!-- Interactive Face -->
+        <div class="face-wrapper" id="faceWrapper">
+            <div class="face-scene">
+                <div class="face" id="faceBase"></div>
+                <div class="eye left">
+                    <div class="pupil" id="pupilL"></div>
+                </div>
+                <div class="eye right">
+                    <div class="pupil" id="pupilR"></div>
+                </div>
+                <div class="eyelid left" id="eyelidL"></div>
+                <div class="eyelid right" id="eyelidR"></div>
+                <div class="mouth" id="mouth"></div>
+                <div class="hand left" id="handL"></div>
+                <div class="hand right" id="handR"></div>
+            </div>
+        </div>
+
+        <!-- Login Card -->
+        <div class="card" id="card">
+            <h2>Welcome Back</h2>
+            <p class="muted">Sign in to continue to your account</p>
+
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input id="email" type="email" placeholder="you@domain.com" required />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input id="password" type="password" placeholder="Enter password" required />
+                </div>
+                <div class="actions">
+                    <button class="btn signin" type="submit">Sign in</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const lamp = document.getElementById('bedsideLamp');
+        const faceBase = document.getElementById('faceBase');
+        const faceWrapper = document.getElementById('faceWrapper');
+        const mainContainer = document.getElementById('mainContainer');
+        const card = document.getElementById('card');
+        const password = document.getElementById('password');
+        const email = document.getElementById('email');
+        const body = document.body;
+        const particlesContainer = document.getElementById('particles');
+        const pupilL = document.getElementById('pupilL');
+        const pupilR = document.getElementById('pupilR');
+        const eyelidL = document.getElementById('eyelidL');
+        const eyelidR = document.getElementById('eyelidR');
+        const mouth = document.getElementById('mouth');
+        const handL = document.getElementById('handL');
+        const handR = document.getElementById('handR');
+
+        let lampOn = false;
+        let isPasswordFocused = false;
+
+        // Initialize particles
+        function createParticles() {
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 4 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                particlesContainer.appendChild(particle);
+                
+                // Animate particles
+                animateParticle(particle);
+            }
+        }
+
+        function animateParticle(particle) {
+            const duration = Math.random() * 20 + 10;
+            const delay = Math.random() * 5;
+            
+            particle.style.transition = `all ${duration}s linear ${delay}s`;
+            particle.style.opacity = '0.7';
+            particle.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px)`;
+            
+            setTimeout(() => {
+                particle.style.opacity = '0';
+                particle.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px)`;
+                
+                // Reset and restart animation
+                setTimeout(() => {
+                    particle.style.transition = 'none';
+                    particle.style.opacity = '0';
+                    particle.style.transform = 'translate(0, 0)';
+                    
+                    setTimeout(() => {
+                        particle.style.left = `${Math.random() * 100}%`;
+                        particle.style.top = `${Math.random() * 100}%`;
+                        
+                        setTimeout(() => {
+                            animateParticle(particle);
+                        }, 100);
+                    }, 100);
+                }, duration * 1000);
+            }, delay * 1000);
+        }
+
+        // Lamp toggle functionality
+        lamp.addEventListener('click', toggleLamp);
+        lamp.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleLamp();
+            }
+        });
+
+        function toggleLamp() {
+            lampOn = !lampOn;
+            lamp.classList.toggle('on', lampOn);
+            lamp.setAttribute('aria-pressed', lampOn);
+
+            if (lampOn) {
+                // Turn on light
+                body.classList.add('light-mode');
+                mainContainer.classList.add('visible');
+                card.classList.add('visible');
+                faceWrapper.classList.add('visible');
+                
+                // Show face with animation
+                setTimeout(() => {
+                    faceBase.classList.add('pop');
+                }, 500);
+                
+                // Start blinking
+                startBlinking();
+            } else {
+                // Turn off light
+                body.classList.remove('light-mode');
+                mainContainer.classList.remove('visible');
+                card.classList.remove('visible');
+                faceWrapper.classList.remove('visible');
+                faceBase.classList.remove('pop');
+                
+                // Reset face expressions
+                mouth.classList.remove('smile');
+                handL.classList.remove('cover');
+                handR.classList.remove('cover');
+            }
+        }
+
+        // Blinking animation
+        function blink() {
+            if (!lampOn) return;
+            
+            eyelidL.style.opacity = '1';
+            eyelidR.style.opacity = '1';
+            
+            setTimeout(() => {
+                eyelidL.style.opacity = '0';
+                eyelidR.style.opacity = '0';
+            }, 150);
+        }
+
+        function startBlinking() {
+            // Initial blink after a short delay
+            setTimeout(blink, 1000);
+            
+            // Regular blinking
+            setInterval(() => {
+                if (lampOn && !isPasswordFocused) {
+                    blink();
+                }
+            }, 3000);
+        }
+
+        // Eye tracking
+        function trackEyes(e) {
+            if (!lampOn) return;
+            
+            const faceRect = faceWrapper.getBoundingClientRect();
+            const faceCenterX = faceRect.left + faceRect.width / 2;
+            const faceCenterY = faceRect.top + faceRect.height / 2;
+            
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+            
+            const deltaX = (mouseX - faceCenterX) / 50;
+            const deltaY = (mouseY - faceCenterY) / 50;
+            
+            // Limit pupil movement
+            const limit = 6;
+            const pupilX = Math.max(-limit, Math.min(limit, deltaX));
+            const pupilY = Math.max(-limit, Math.min(limit, deltaY));
+            
+            pupilL.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
+            pupilR.style.transform = `translate(${pupilX}px, ${pupilY}px)`;
+        }
+
+        // Smile when email is valid
+        email.addEventListener('input', () => {
+            if (!lampOn) return;
+            
+            const valid = email.value.includes('@') && email.value.includes('.') && email.value.length > 5;
+            mouth.classList.toggle('smile', valid);
+        });
+
+        // Cover eyes when typing password
+        password.addEventListener('focus', () => {
+            if (!lampOn) return;
+            
+            isPasswordFocused = true;
+            handL.classList.add('cover');
+            handR.classList.add('cover');
+        });
+
+        password.addEventListener('blur', () => {
+            isPasswordFocused = false;
+            handL.classList.remove('cover');
+            handR.classList.remove('cover');
+        });
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (lampOn) {
+                // Add a little celebration
+                faceBase.style.transform = 'translate(-50%, -50%) scale(1.1)';
+                setTimeout(() => {
+                    faceBase.style.transform = 'translate(-50%, -50%) scale(1)';
+                }, 300);
+                
+                // Show success message
+                alert('Login successful! Welcome back.');
+            }
+        });
+
+        // Initialize
+        window.addEventListener('mousemove', trackEyes);
+        createParticles();
+
+        // Add keyboard accessibility
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lampOn) {
+                toggleLamp();
+            }
+        });
+    </script>
+</body>
+</html>
