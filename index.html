@@ -574,6 +574,37 @@
 
         @media (max-width: 900px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 560px) { .gallery-grid { grid-template-columns: 1fr; } }
+
+        .project-thumb img { cursor: zoom-in; }
+
+        .lightbox {
+            position: fixed; inset: 0; z-index: 1000;
+            background: rgba(6, 8, 16, 0.94);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+        }
+        .lightbox.open { opacity: 1; pointer-events: auto; }
+        .lightbox-figure { margin: 0; max-width: 90vw; max-height: 86vh; display: flex; flex-direction: column; align-items: center; }
+        .lightbox-figure img { max-width: 90vw; max-height: 78vh; object-fit: contain; border-radius: 12px; box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6); }
+        .lightbox-figcaption { margin-top: 14px; color: var(--muted); font-size: 0.95rem; text-align: center; }
+        .lightbox-count { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); color: var(--muted); font-size: 0.85rem; }
+        .lightbox-close, .lightbox-nav {
+            position: fixed; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #fff; font-size: 1.3rem; cursor: pointer; width: 46px; height: 46px;
+            display: flex; align-items: center; justify-content: center; border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .lightbox-close { top: 22px; right: 22px; }
+        .lightbox-nav { top: 50%; transform: translateY(-50%); }
+        .lightbox-nav.prev { left: 22px; }
+        .lightbox-nav.next { right: 22px; }
+        .lightbox-close:hover, .lightbox-nav:hover { background: rgba(34, 211, 238, 0.25); }
+        @media (max-width: 560px) {
+            .lightbox-close, .lightbox-nav { width: 38px; height: 38px; font-size: 1rem; }
+            .lightbox-nav.prev { left: 12px; }
+            .lightbox-nav.next { right: 12px; }
+            .lightbox-close { right: 14px; top: 14px; }
+        }
     </style>
 </head>
 <body>
@@ -936,6 +967,17 @@
 
     <div class="toast" id="toast">Message sent — opening your email app to finish up.</div>
 
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+        <button class="lightbox-close" aria-label="Close preview">&times;</button>
+        <button class="lightbox-nav prev" aria-label="Previous image">&#10094;</button>
+        <figure class="lightbox-figure">
+            <img src="" alt="">
+            <figcaption class="lightbox-figcaption"></figcaption>
+        </figure>
+        <button class="lightbox-nav next" aria-label="Next image">&#10095;</button>
+        <span class="lightbox-count"></span>
+    </div>
+
     <script>
         const burger = document.getElementById('burger');
         const navLinks = document.getElementById('navLinks');
@@ -1013,6 +1055,49 @@
         });
 
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        // project gallery lightbox
+        (function () {
+            const lightbox = document.getElementById('lightbox');
+            const lbImg = lightbox.querySelector('.lightbox-figure img');
+            const lbCap = lightbox.querySelector('.lightbox-figcaption');
+            const lbCount = lightbox.querySelector('.lightbox-count');
+            const imgs = Array.from(document.querySelectorAll('.project-card .project-thumb img'));
+            let idx = 0;
+
+            const show = (i) => {
+                idx = (i + imgs.length) % imgs.length;
+                lbImg.src = imgs[idx].currentSrc || imgs[idx].src;
+                lbImg.alt = imgs[idx].alt;
+                lbCap.textContent = imgs[idx].alt;
+                lbCount.textContent = (idx + 1) + ' / ' + imgs.length;
+            };
+            const open = (i) => {
+                show(i);
+                lightbox.classList.add('open');
+                lightbox.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            };
+            const close = () => {
+                lightbox.classList.remove('open');
+                lightbox.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            };
+
+            imgs.forEach((img, i) => img.addEventListener('click', () => open(i)));
+            lightbox.querySelector('.lightbox-close').addEventListener('click', close);
+            lightbox.querySelector('.prev').addEventListener('click', () => show(idx - 1));
+            lightbox.querySelector('.next').addEventListener('click', () => show(idx + 1));
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox || e.target === lightbox.querySelector('.lightbox-figure')) close();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox.classList.contains('open')) return;
+                if (e.key === 'Escape') close();
+                if (e.key === 'ArrowLeft') show(idx - 1);
+                if (e.key === 'ArrowRight') show(idx + 1);
+            });
+        })();
     </script>
 </body>
 </html><!-- deployed Tue Sep 15 11:56:53 AM WAT 2026 -->
